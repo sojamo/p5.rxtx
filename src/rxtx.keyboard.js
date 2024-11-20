@@ -1,5 +1,9 @@
 import { enterFullscreen } from "./rxtx.window";
 
+/**
+ * 
+ * @param {*} theState 
+ */
 export const keyPressed = (theState) => {
 
   if (isKeyPressed === true) {

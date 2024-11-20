@@ -1,7 +1,13 @@
 import { parseStringToJSON } from "./rxtx.processing";
 import { log } from "./rxtx.debug";
 
-export const startRxtxWith = (theState) => {
+export const startRxtxWith = async (theState) => {
+  try {
+    await reconnectToPreviouslyGrantedPorts(theState);
+    return theState;
+  } catch (err) {
+    console.log("couldnt reconnect");
+  }
   const button = createButton("connect");
   button.position(20, 20);
   button.style("background:#03a1ff");
@@ -49,7 +55,10 @@ const selectPort = async () => {
   return port;
 };
 
+const connectedPorts = [];
+
 const connectToPort = async (thePort, theState) => {
+  console.log(thePort, theState);
   try {
     // Open the port with the given baud rate
     await thePort.open({ baudRate: theState.baudRate });
@@ -62,8 +71,10 @@ const connectToPort = async (thePort, theState) => {
     const reader = decoder.readable.getReader();
     const writer = thePort.writable.getWriter();
 
+    connectedPorts.push({ thePort, reader, writer });
+
     // Log successful connection
-    log("Serial communication established", thePort.getInfo());
+    log("Serial communication established with ", thePort.getInfo());
 
     // Update the state
     Object.assign(theState, {
@@ -74,12 +85,21 @@ const connectToPort = async (thePort, theState) => {
       io: true, // @TODO: Decide if io is redundant
     });
 
-    readLoopFor(theState);
+    readFromPort(theState);
 
     return { inputDone }; // Return the promise for tracking input stream completion
   } catch (error) {
     log("Error connecting to port:", error);
     throw error; // Rethrow error for upstream handling
+  }
+};
+
+// Automatically reconnect to previously granted ports
+export const reconnectToPreviouslyGrantedPorts = async (theState) => {
+  const ports = await navigator.serial.getPorts();
+  console.log("trying to reconnect to previous ports", ports);
+  for (const port of ports) {
+    await connectToPort(port, theState);
   }
 };
 
@@ -97,7 +117,7 @@ const checkRxtxData = (theData) => {
   return utf8EncodeText.encode(theData);
 };
 
-const readLoopFor = async (theState) => {
+const readFromPort = async (theState) => {
   while (true) {
     const { value, done } = await theState.reader.read();
     if (value) {
@@ -122,7 +142,7 @@ const readLoopFor = async (theState) => {
             theState.value = val.value || [];
             theState.id = val.id || -1;
             theState.debug.data = theState;
-            const data = { "id": theState.id, "value": theState.value };
+            const data = { id: theState.id, value: theState.value };
             theState.fn(data);
             theState.rxtxEvent(data);
           }

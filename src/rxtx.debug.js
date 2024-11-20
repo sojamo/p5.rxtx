@@ -1,4 +1,3 @@
-
 export const showRxtxDebug = (theState) => {
   if (theState.debug.print) {
     if (theState.debug.data.value == undefined) {

@@ -5,7 +5,7 @@ export const parseStringToJSON = async (theString) => {
   } catch (error) {
     return { id: -1 };
   }
-}
+};
 
 export const parseStringToArray = (theData) => {
   if (theData.charAt(0) == "[") {
@@ -17,7 +17,7 @@ export const parseStringToArray = (theData) => {
   } else {
     return float(theData);
   }
-}
+};
 
 export const str2ab = (theString) => {
   var buf = new ArrayBuffer(theString.length * 2); // 2 bytes for each char
@@ -26,19 +26,15 @@ export const str2ab = (theString) => {
     bufView[i] = theString.charCodeAt(i);
   }
   return buf;
-}
+};
 
 export const deepMerge = (target, source) => {
   for (const key in source) {
-    if (
-      source[key] &&
-      typeof source[key] === 'object' &&
-      !Array.isArray(source[key])
-    ) {
+    if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
       target[key] = deepMerge(target[key] || {}, source[key]);
     } else {
       target[key] = source[key];
     }
   }
   return target;
-}
+};

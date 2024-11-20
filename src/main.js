@@ -1,44 +1,44 @@
 import { environmentCheck, initWith } from "./rxtx.init";
 
+const state = {};
 
 /**
- * 
- * @param {*} theApp 
- * @param {*} theArgs 
+ *
+ * @param {*} theApp
+ * @param {*} theArgs
  */
-export const connect = (theApp, theArgs = {}) => {
+export const connect = async (theApp, theArgs = {}) => {
   initWith(theApp, theArgs, state);
 };
 
-
 /**
- * 
- * @returns 
+ *
+ * @returns
  */
 export const isValuesAvailable = () => {
   return state.debug.data.value == undefined ? false : true;
 };
 
 /**
- * 
- * @returns 
+ *
+ * @returns
  */
 export const isConnectionEstablished = () => {
   return state.connected;
 };
 
 /**
- * 
- * @returns 
+ *
+ * @returns
  */
 export const isReadyToSend = () => {
   return state.io != null;
 };
 
 /**
- * 
- * @param {*} theIndex 
- * @returns 
+ *
+ * @param {*} theIndex
+ * @returns
  */
 export const getValueAt = (theIndex) => {
   const values = getValues();
@@ -46,13 +46,11 @@ export const getValueAt = (theIndex) => {
 };
 
 /**
- * 
- * @returns 
+ *
+ * @returns
  */
 export const getValues = () => {
   return state.value || [];
 };
 
-const state = {};
-
-environmentCheck(window, state)
+environmentCheck(window, state);
