@@ -1,8 +1,23 @@
 {
-  "name": "test-p5-lib-vite",
+  "name": "p5.rxtx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sojamo/p5.rxtx.git"
+  },
+  "author": "Andreas Schlegel",
   "version": "0.1.0",
-  "main": "index.js",
+  "description": "A lightweight p5.js extension for managing serial communication between web apps and devices via the Web Serial API using JSON messaging.",
   "license": "MIT",
+  "homepage": "https://github.com/sojamo/p5.rxtx", 
+  "keywords": [
+    "serial",
+    "web-serial",
+    "p5.js",
+    "library",
+    "extension",
+    "communication",
+    "arduino"
+  ],
   "scripts": {
     "build": "vite build",
     "dev": "vite"
