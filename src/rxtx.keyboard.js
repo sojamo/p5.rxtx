@@ -1,34 +1,50 @@
 import { enterFullscreen } from "./rxtx.window";
+import { getFormattedTimeStamp } from "./rxtx.processing";
 
 /**
+ * Handles keypress events and updates the application state based on the
+ * pressed key. Supports toggling debug modes, entering fullscreen,
+ * and saving a canvas image. Checks for allowed keys and ensures state
+ * consistency during keypress handling.
  * 
- * @param {*} theState 
+ * Mapped keys can be dis/enabled with the mappedKeys option
+ * @see initWith - Initializes the state with default, user-defined, settings
+ *
+ * @param {Object} theState - The current application state. Includes:
+ *   - {boolean} isKeyPressed - Tracks whether a key is currently pressed.
+ *   - {Object} debug - Manages debug settings:
+ *       - {boolean} show - Toggles debug display.
+ *       - {boolean} print - Toggles debug print mode.
+ *   - {Array<string>} mappedKeys - Allowed keys for handling.
+ *   - {Object} image - Contains image properties:
+ *       - {string} format - File format for saved images.
+ *       - {string} label - Prefix label for saved images.
+ * 
  */
 export const keyPressed = (theState) => {
-
   if (isKeyPressed === true) {
     if (theState.isKeyPressed === false) {
       theState.isKeyPressed = true;
+      if (!theState.mappedKeys.includes(key)) {
+        return;
+      }
       switch (key) {
+        case "d":
+          theState.debug.show = !theState.debug.show;
+          break;
         case "f":
           enterFullscreen();
           break;
         case "p":
           theState.debug.print = !theState.debug.print;
           break;
-        case "d":
-          theState.debug.show = theState.debug.show ? true : false;
-          break;
         case "s":
-          let t = "";
-          t = year() + nf(month(), 2) + nf(day(), 2);
-          t += nf(hour(), 2) + nf(minute(), 2) + nf(second(), 2);
-          let label = "";
-          label += theState.image.label;
-          label += "_" + t;
-          label += "." + theState.image.format;
-          log(`saving image ${label}`);
-          saveCanvas(label, rxtxProps.image.format);
+          const l = theState.image.label;
+          const t = getFormattedTimeStamp();
+          const ext = theState.image.format;
+          let label = `${l}_${t}.${ext}`;
+          console.log(`saving image ${label}`);
+          saveCanvas(label, theState.image.format);
           break;
       }
     }
@@ -36,6 +52,3 @@ export const keyPressed = (theState) => {
     theState.isKeyPressed = false;
   }
 };
-
-
-
