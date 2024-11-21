@@ -42,7 +42,7 @@ export const keyPressed = (theState) => {
           const l = theState.image.label;
           const t = getFormattedTimeStamp();
           const ext = theState.image.format;
-          let label = `${l}_${t}.${ext}`;
+          const label = `${l}_${t}.${ext}`;
           console.log(`saving image ${label}`);
           saveCanvas(label, theState.image.format);
           break;
