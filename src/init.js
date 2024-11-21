@@ -1,7 +1,7 @@
-import { deepMerge, updateState } from "./rxtx.processing";
-import { startRxtxWith } from "./rxtx.serial";
-import { keyPressed } from "./rxtx.keyboard";
-import { showRxtxDebug } from "./rxtx.debug";
+import { deepMerge, updateState } from "./utils/processing";
+import { startRxtxWith } from "./serial/setup";
+import { keyPressed } from "./ui/keyboard";
+import { showRxtxDebug } from "./utils/debug";
 
 /**
  * Initializes the application state with default, user-defined, and internal

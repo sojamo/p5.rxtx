@@ -1,5 +1,5 @@
-import { enterFullscreen } from "./rxtx.window";
-import { getFormattedTimeStamp } from "./rxtx.processing";
+import { enterFullscreen } from "./window";
+import { getFormattedTimeStamp } from "../utils/processing";
 
 /**
  * Handles keypress events and updates the application state based on the

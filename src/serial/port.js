@@ -1,5 +1,5 @@
-import { handleIncomingData } from "./rxtx.serial.data";
-import { updateState } from "./rxtx.processing";
+import { handleIncomingData } from "./data";
+import { updateState } from "../utils/processing";
 
 /**
  * Retrieves all available serial ports that the user has

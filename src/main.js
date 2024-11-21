@@ -1,4 +1,4 @@
-import { environmentCheck, initWith } from "./rxtx.init";
+import { environmentCheck, initWith } from "./init";
 
 const state = {};
 

@@ -16,6 +16,7 @@
  * @param {Object} theState - The state object containing debug information.
  */
 export const showRxtxDebug = (theState) => {
+  if (theState.debug === undefined) return;
   if (theState.debug.print) {
     if (theState.debug.data.value == undefined) {
       console.log("debug.print, no data present yet.");

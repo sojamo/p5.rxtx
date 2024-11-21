@@ -2,7 +2,7 @@ import {
   checkPortConnectionFor,
   getAvailablePorts,
   reconnectToPreviouslyGrantedPorts,
-} from "./rxtx.serial.port";
+} from "./port";
 
 
 /**

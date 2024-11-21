@@ -1,4 +1,4 @@
-import { parseStringToJSON, updateState } from "./rxtx.processing";
+import { parseStringToJSON, updateState } from "../utils/processing";
 
 /**
  * Sends data to the connected serial device via the Web Serial API.
