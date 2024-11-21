@@ -7,6 +7,7 @@ A lightweight extension for the p5.js library for managing serial communication 
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [CDN](#cdn)
 - [Features](#features)
 - [Message format](#message-format)
 - [Acknowledgments](#acknowledgments)
@@ -19,6 +20,10 @@ A lightweight extension for the p5.js library for managing serial communication 
 ## Usage
 
 *How to use the project, with code examples.*
+
+## CDN
+
+The extension can be accessed through the jsdelivr CDN at [https://cdn.jsdelivr.net/gh/sojamo/p5.rxtx@latest/lib/p5.rxtx.min.js](https://cdn.jsdelivr.net/gh/sojamo/p5.rxtx@latest/lib/p5.rxtx.min.js) or see available tags at [p5.rxtx/tags](https://github.com/sojamo/p5.rxtx/tags)
 
 ## Features
 
