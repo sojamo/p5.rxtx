@@ -25,7 +25,7 @@ The extension code can be added to a p5.js sketch in 2 ways.
 1. manually copy *p5.rxtx.min.js* from the lib folder to your sketch files and import the script into the index.html file by adding
 
 ```html
-<script>p5.rxtx.min.js</script>
+<script src="p5.rxtx.min.js"></script>
 ```
 2. Use the jsdelivr CDN to import the extension, see details in the next section.
 
@@ -34,7 +34,7 @@ The extension code can be added to a p5.js sketch in 2 ways.
 The extension can be accessed through the jsdelivr CDN at [https://cdn.jsdelivr.net/gh/sojamo/p5.rxtx@latest/lib/p5.rxtx.min.js](https://cdn.jsdelivr.net/gh/sojamo/p5.rxtx@latest/lib/p5.rxtx.min.js) or see available tags at [p5.rxtx/tags](https://github.com/sojamo/p5.rxtx/tags) then import the script into the index.html file by adding
 
 ```html
-<script>https://cdn.jsdelivr.net/gh/sojamo/p5.rxtx@latest/lib/p5.rxtx.min.js</script>
+<script src="https://cdn.jsdelivr.net/gh/sojamo/p5.rxtx@latest/lib/p5.rxtx.min.js"></script>
 
 ```
 
