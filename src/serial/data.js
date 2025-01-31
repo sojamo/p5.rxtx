@@ -57,6 +57,7 @@ export const handleIncomingData = (value, theState) => {
   parseStringToJSON(theState.readBuffer)
     .then((parsedData) => {
       if (parsedData.value !== undefined) {
+        
         // @TODO fix this messy looking data transfer
         const { id, value } = parsedData;
         theState.debug.data = { value, id };

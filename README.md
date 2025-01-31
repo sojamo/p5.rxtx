@@ -15,6 +15,7 @@ An example use case for p5.rxtx is a physical computing project that connects an
   - [Schema](#schema)
   - [Message example](#message-example)
   - [Arduino implementation](#arduino-implementation)
+  - [Unavailable or device is failing to connect](#unavailable-or-device-is-failing-to-connect)
 - [Acknowledgments](#acknowledgments)
 - [FAQ](#faq)
 
@@ -40,11 +41,11 @@ The extension can be accessed through the jsdelivr CDN at [https://cdn.jsdelivr.
 
 ## Usage
 
-*How to use the project, with code examples.*
+See the examples folder for code samples.
 
 ## Features
 
-*Key features of the project.*
+The current version of this library can connect to a device (for example an Arduino) over serial communication. It uses a simple message format to pass messages between a device and a p5.js sketch.
 
 ## Message Format
 
@@ -85,6 +86,10 @@ And here an example of what is expected when sending and receiving a message:
 ### Arduino implementation
 
 *Arduino example 1: sending a composed string; Arduino example 2: sending using JSON library; send and receive using JSON library*
+
+### Unavailable or device is failing to connect
+
+In case the library is not able to detect a serial connection any more, an unavailable button will appear in the top left corner. This might happen because the device has been disconnected or lost connection. Once it is reconnected, press the _unavailable_ button or reload the page.  
 
 ## Acknowledgments
 

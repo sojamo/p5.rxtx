@@ -29,7 +29,7 @@ export const initWith = (theApp, theArgs, theState) => {
       label: "rxtx",
       format: "jpg",
     },
-    mappedKeys: ["d","f","p","s"],
+    mappedKeys: ["d","f","p","s","v"],
     debug: { print: false, show: false },
   };
 

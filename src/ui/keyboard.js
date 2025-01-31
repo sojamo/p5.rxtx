@@ -1,6 +1,11 @@
 import { enterFullscreen } from "./window";
 import { getFormattedTimeStamp } from "../utils/processing";
 
+// @NOTE: Application version - injected from package.json during 
+// production build, defaults to 'dev-version' during development
+// handled by vite plugin vite.plugin.version.js
+const VERSION = /* @INJECT_VERSION */ || 'dev-version';
+
 /**
  * Handles keypress events and updates the application state based on the
  * pressed key. Supports toggling debug modes, entering fullscreen,
@@ -28,6 +33,8 @@ export const keyPressed = (theState) => {
       if (!theState.mappedKeys.includes(key)) {
         return;
       }
+      // @NOTE: to add a new mapped key, you need 
+      // to add that key to the mappedKeys array (init.js)
       switch (key) {
         case "d":
           theState.debug.show = !theState.debug.show;
@@ -45,6 +52,9 @@ export const keyPressed = (theState) => {
           const label = `${l}_${t}.${ext}`;
           console.log(`saving image ${label}`);
           saveCanvas(label, theState.image.format);
+          break;
+        case "v":
+          console.log(`p5.rxtx ${VERSION} by sojamo`);
           break;
       }
     }

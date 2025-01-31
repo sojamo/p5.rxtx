@@ -16,7 +16,7 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(120);
 
   /*
    * Checks if rxtx values are available and updates the 
