@@ -151,11 +151,10 @@ const connectToPort = async (thePort, theState) => {
       writer,
       io: true, // @TODO: Decide if io is redundant
     });
-
-    // Start reading from the port
-    // await readFromPort(theState);
+    
   } catch (err) {
     console.log("Error connecting to port:", err);
+
     cleanupResources(thePort, theState).then(() =>
       console.log("Resources cleaned up.")
     ).catch(console.error);

@@ -1,23 +1,24 @@
 /*
- * This sketch demonstrates how to send data using Arduino and the 
- * ArduinoJson library only when the button's state changes 
- * (from pressed to not pressed, or vice versa).
- * 
- * This sketch requires the ArduinoJson library to send data.
- * You can install the library via the Library Manager in the Arduino IDE.
- * 
- * To install:
- * 1. Go to the Library Manager in the Arduino IDE.
- * 2. Search for "ArduinoJson".
- * 3. Install "ArduinoJson" by Benoit Blanchon.
- * 
- * For more information, the library's documentation can be found here:
- * https://arduinojson.org/
- * 
- * this is Arduino code to go along with th p5.rxtx library 
+ * Arduino code for use with the p5.rxtx library: 
  * https://github.com/sojamo/p5.rxtx/
- * 
-*/
+ *
+ * This sketch demonstrates how to send data using Arduino and 
+ * the ArduinoJson library, only when the button's state changes 
+ * (i.e., from pressed to released or vice versa).
+ *
+ * The ArduinoJson library is required to format and send data.
+ * You can install it via the Arduino IDE Library Manager:
+ *
+ * Installation Steps:
+ * 1. Open the Arduino IDE.
+ * 2. Go to Sketch → Include Library → Manage Libraries.
+ * 3. Search for "ArduinoJson".
+ * 4. Install "ArduinoJson" by Benoît Blanchon.
+ *
+ * For documentation and examples, visit:
+ * https://arduinojson.org/
+ */
+
 
 #include <ArduinoJson.h>
 DynamicJsonDocument docTx(256);

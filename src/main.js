@@ -1,4 +1,5 @@
 import { environmentCheck, initWith } from "./init";
+import { rxtxSendTo } from "./serial/data";
 
 const state = {};
 
@@ -28,7 +29,7 @@ export const connect = async (theApp, theArgs = {}) => {
 };
 
 /**
- * Checks if values are available in the RXTX state.
+ * Checks if values are available in the rxtx state.
  *
  * This function verifies if the `value` field in the RXTX state is defined.
  * Returns `true` if values are available, otherwise `false`. It is designed
@@ -57,7 +58,7 @@ export const isConnectionEstablished = () => {
   return state.connected;
 };
 
-export const isReadyToWrite = () => {
+export const isReadyToSend = () => {
   return state.io != null;
 };
 
@@ -89,19 +90,24 @@ export const getValues = () => {
   return state.value || [];
 };
 
+export const send = (theJSONformattedData) => {
+  const str = JSON.stringify(theJSONformattedData);
+  rxtxSendTo(state, str);
+};
+
 /**
- * Checks the runtime environment for necessary conditions and updates the
- * application state accordingly.
+ * Checks the runtime environment for necessary conditions
+ * and updates the application state accordingly.
  *
- * @param {Window} window - The global window object, used for browser-related
- * checks.
- * @param {Object} state - The application state object to be updated based on
- * the environment check results.
+ * @param {Window} window - The global window object, used
+ * for browser-related checks.
+ * @param {Object} state - The application state object to
+ * be updated based on the environment check results.
  *
- * This function verifies if the runtime environment supports the required APIs
- * or features (e.g., Web Serial API) and updates the provided state object
- * with relevant flags or properties, enabling other parts of the application
- * to adapt to the current environment.
- *
+ * This function verifies if the runtime environment supports
+ * the required APIs or features (e.g., Web Serial API) and updates
+ * the provided state object with relevant flags or properties,
+ * enabling other parts of the application to adapt to the
+ * current environment.
  */
 environmentCheck(window, state);

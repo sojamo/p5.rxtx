@@ -5,7 +5,7 @@
     "url": "https://github.com/sojamo/p5.rxtx.git"
   },
   "author": "Andreas Schlegel",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A lightweight p5.js extension for managing serial communication between web apps and devices via the Web Serial API using JSON messaging.",
   "license": "MIT",
   "homepage": "https://github.com/sojamo/p5.rxtx", 

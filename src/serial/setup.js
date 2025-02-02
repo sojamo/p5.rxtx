@@ -76,17 +76,17 @@ const addConnectButton = async (theState, available = true) => {
   button.mouseOut(() => button.style(`background: ${col[0]};`));
 
   button.mousePressed(async () => {
-    theState.fn = (val) => {
-      console.log("debug: " + val);
-    };
-
+    
+    // remove the button before checkPortConnectionFor
+    // in the next step goes into while-loop mode
+    button.remove();
     try {
-      const isConnected = await checkPortConnectionFor(theState);
-      console.log(isConnected);
-      if (isConnected) button.remove();
+      // we have a connection
+      await checkPortConnectionFor(theState);
     } catch (err) {
-      console.log(err.message);
-      // @TODO add 'not connected' notification
+      // we can't connect
+      console.log(`port is busy, ${err.message}`);
+      addConnectButton(theState, false); 
     }
   });
 };

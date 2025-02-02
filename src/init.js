@@ -24,12 +24,12 @@ export const initWith = (theApp, theArgs, theState) => {
     baudRate: 57600,
     id: -1,
     value: [],
-    fn: (ev) => {},
+    range: [],
     image: {
       label: "rxtx",
       format: "jpg",
     },
-    mappedKeys: ["d","f","p","s","v"],
+    mappedKeys: ["d", "f", "p", "s", "v"],
     debug: { print: false, show: false },
   };
 
@@ -48,18 +48,17 @@ export const initWith = (theApp, theArgs, theState) => {
 };
 
 /**
- * Performs an environment check for the p5.js instance and registers 
- * custom behaviors for the window resize and specific "post" methods. 
+ * Performs an environment check for the p5.js instance and registers
+ * custom behaviors for the window resize and specific "post" methods.
  * If p5.js is not found in the global scope, an error is logged.
- * 
+ *
  * @param {object} theInstance - The global object to check for p5.js.
- * @param {object} theState - The application state object used for 
+ * @param {object} theState - The application state object used for
  *                            handling key press and debugging behaviors.
- * 
+ *
  * - Registers a `windowResized` function to resize the canvas dynamically.
  * - Registers "post" methods for handling key presses and debugging.
  * - Logs an error if p5.js is not available in the environment.
- * 
  */
 export const environmentCheck = (theInstance, theState) => {
   (function (global) {
