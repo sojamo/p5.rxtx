@@ -11,7 +11,7 @@ export const parseStringToJSON = async (theString) => {
     let json = JSON.parse(theString);
     return json;
   } catch (error) {
-    return { id: -1 };
+    return { id: -1, value: [], type: "error" };
   }
 };
 

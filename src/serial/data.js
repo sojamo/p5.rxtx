@@ -1,25 +1,27 @@
 import { parseStringToJSON, updateState } from "../utils/processing";
 
+const utf8EncodeText = new TextEncoder();
+
 /**
  * Sends data to the connected serial device via the Web Serial API.
  *
  * @async
- * @function rxtxWriteTo
+ * @function rxtxSendTo
  * @param {Object} theState - The current application state, including the
  *                            serial port and writer.
- * @param {*} theData - The data to be sent to the serial device. This data
+ * @param {String} theString - The data to be sent to the serial device. This data
  *                      will be processed before being written.
  * @returns {Promise<boolean>} Returns true if the data was successfully sent,
  *                             or false if no port is available in the state.
  *
  * @example
  * const state = { port: somePort, writer: someWriter };
- * const success = await rxtxWriteTo(state, "Hello Device");
+ * const success = await rxtxSendTo(state, "{id:1, value:[1,2]}");
  * console.log(success); // true if data was sent successfully
  */
-export const rxtxWriteTo = async (theState, theData) => {
+export const rxtxSendTo = async (theState, theString) => {
   if (!theState?.port) return false;
-  await theState.writer.write(checkRxtxData(theData));
+  await theState.writer.write(checkRxtxData(theString));
   return true;
 };
 
@@ -57,6 +59,7 @@ export const handleIncomingData = (value, theState) => {
   parseStringToJSON(theState.readBuffer)
     .then((parsedData) => {
       if (parsedData.value !== undefined) {
+        
         // @TODO fix this messy looking data transfer
         const { id, value } = parsedData;
         theState.debug.data = { value, id };
@@ -66,8 +69,11 @@ export const handleIncomingData = (value, theState) => {
           // debug: { data: theState }, // @TODO look into this assignment, overrides debug settings
         });
 
-        theState.fn({ id: theState.id, value: theState.value });
-        theState.rxtxEvent({ id: theState.id, value: theState.value });
+        theState.rxtxEvent({ 
+          id: theState.id, 
+          value: theState.value,
+          getValueAt: (theIndex) => theState.value[theIndex]
+        });
       }
       theState.readBuffer = remainder || "";
     })

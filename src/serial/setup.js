@@ -4,7 +4,6 @@ import {
   reconnectToPreviouslyGrantedPorts,
 } from "./port";
 
-
 /**
  * Initializes the rxtx extension by checking available serial ports and managing
  * connection states. If no ports are detected, it adds a "Connect" button
@@ -16,7 +15,6 @@ import {
  * @param {Object} theState - The application state object that holds serial
  *                            connection information and configurations.
  * @returns {Object} Updated state object after processing available ports.
- *
  */
 
 export const startRxtxWith = async (theState) => {
@@ -33,7 +31,7 @@ export const startRxtxWith = async (theState) => {
         await reconnectToPreviouslyGrantedPorts(theState);
       } catch (err) {
         console.log("couldn't reconnect to previously granted port(s).");
-        await addConnectButton(theState);
+        await addConnectButton(theState, false);
       }
       break;
   }
@@ -56,13 +54,15 @@ export const startRxtxWith = async (theState) => {
  * users to establish a connection.
  */
 
-const addConnectButton = async (theState) => {
-  // @TODO check if button already exists to avoid more 
+const addConnectButton = async (theState, available = true) => {
+  // @TODO check if button already exists to avoid more
   // than 1 instances at the same time
-  const button = createButton("connect");
+  const label = available ? "connect" : "unavailable";
+  const col = available ? ["#03a1ff", "#06b004"] : ["#ffa103", "#666666"];
+  const button = createButton(label);
   button.position(20, 20);
   button.style(`
-    background: #03a1ff;
+    background: ${col[0]};
     color: #fff;
     font-size: 16px;
     margin: auto;
@@ -72,19 +72,21 @@ const addConnectButton = async (theState) => {
     transition: background 0.3s;
   `);
 
-  button.mouseOver(() => button.style("background: #06b004;"));
-  button.mouseOut(() => button.style("background: #03a1ff;"));
+  button.mouseOver(() => button.style(`background: ${col[1]};`));
+  button.mouseOut(() => button.style(`background: ${col[0]};`));
 
   button.mousePressed(async () => {
-    theState.fn = (val) => {
-      // console.log("debug: " + val);
-    };
+    
+    // remove the button before checkPortConnectionFor
+    // in the next step goes into while-loop mode
     button.remove();
     try {
-      const isConnected = await checkPortConnectionFor(theState);
-      if (!isConnected) addConnectButton(theState);
+      // we have a connection
+      await checkPortConnectionFor(theState);
     } catch (err) {
-      console.log(err);
+      // we can't connect
+      console.log(`port is busy, ${err.message}`);
+      addConnectButton(theState, false); 
     }
   });
 };

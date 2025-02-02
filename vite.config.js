@@ -1,7 +1,11 @@
 import { defineConfig } from "vite";
 import { terser } from "rollup-plugin-terser";
+import vitePluginVersion from './vite.plugin.version';
 
 export default defineConfig({
+  plugins: [
+    vitePluginVersion()
+  ],
   build: {
     outDir: "lib", // Output directory
     sourcemap: true, // Enable sourcemaps

@@ -1,86 +1,217 @@
 /**
- * Displays debugging information for the RXTX state.
- *
- * This function logs and visualizes the debug data stored in the `theState`
- * object. It first checks whether debugging options are enabled (`print` and
- * `show`) and whether valid data is available. If data is present and the
- * `show` option is enabled, a graphical layer is created or updated to display
- * the data as a list of visualized values on the canvas.
- *
- * The debug output includes:
- * - Text logging of debug data if `print` is enabled.
- * - A graphical representation of values, showing constrained bars and
- *   corresponding numeric labels.
- * - Integration with WebGL mode by offsetting the canvas transformation.
- *
- * @param {Object} theState - The state object containing debug information.
+ * Main debug information display handler for rxtx state
+ * @param {Object} theState - The state object containing debug information
  */
 export const showRxtxDebug = (theState) => {
   if (theState.debug === undefined) return;
-  if (theState.debug.print) {
-    if (theState.debug.data.value == undefined) {
-      console.log("debug.print, no data present yet.");
-    } else {
-      console.log(theState.debug.data.value);
-    }
-  }
+
+  handleDebugPrinting(theState);
   if (!theState.debug.show || !theState.debug.data.value) return;
 
-  const isWEBGL = drawingContext instanceof WebGLRenderingContext;
+  const dimensions = calculateDebugDimensions(theState.debug.data.value.length);
+  updateRanges(theState);
 
-  const v = theState.debug.data.value;
-  const id = theState.debug.data.id;
-  const label = `Device ${id}`;
+  const layer = createOrUpdateDebugLayer(theState, dimensions);
+  drawDebug(theState, layer, dimensions);
+};
+
+/**
+ * Handles console logging of debug data
+ * @param {Object} theState - The state object
+ */
+const handleDebugPrinting = (theState) => {
+  if (!theState.debug.print) return;
+
+  if (theState.debug.data.value == undefined) {
+    console.log("debug.print, no data present yet.");
+  } else {
+    console.log(theState.debug.data.value);
+  }
+};
+
+/**
+ * Calculates dimensions for debug visualization
+ * @param {number} theValueCount - Number of values to display
+ * @returns {Object} Width, height, and layout parameters
+ */
+const calculateDebugDimensions = (theValueCount) => {
   const spacing = 20;
   const header = 40;
   const footer = 20;
-  const h = header + v.length * spacing + footer;
-  const w = 400;
+  return {
+    width: 400,
+    height: header + theValueCount * spacing + footer,
+    spacing,
+    header,
+    footer,
+    barLength: 300,
+  };
+};
+
+/**
+ * Updates value ranges in the state
+ * @param {Object} theState - The state object
+ */
+const updateRanges = (theState) => {
+  const values = theState.debug.data.value;
+  const r0 = theState.range || [];
+  theState.range = updateRangeFor(values, r0);
+
+  values.forEach((v0, i) => {
+    theState.range[i].min = v0 < theState.range[i].min
+      ? v0
+      : theState.range[i].min;
+    theState.range[i].max = v0 > theState.range[i].max
+      ? v0
+      : theState.range[i].max;
+  });
+};
+
+/**
+ * Creates or updates the graphics layer for debug visualization
+ * @param {Object} theState - The state object
+ * @param {Object} theDimensions - Layout dimensions
+ * @returns {Object} Graphics layer
+ */
+const createOrUpdateDebugLayer = (theState, theDimensions) => {
   if (!theState.debug.layer) {
-    theState.debug.layer = createGraphics(w, h);
+    theState.debug.layer = createGraphics(
+      theDimensions.width,
+      theDimensions.height,
+    );
     theState.debug.layer.clear();
   }
-  const l = theState.debug.layer;
-  l.clear();
-  l.noStroke();
-  l.fill(0, 40);
-  l.rect(0, 0, w, h, 16);
-  l.push();
-  l.translate(20, 20);
-  l.fill(255);
-  l.text(label, 0, 0);
-  l.translate(0, 20);
-  v.forEach((v, i) => {
-    let v0 = constrain(v, 0, 1);
-    l.push();
-    l.translate(0, i * 20);
-    l.fill(255, 40);
-    l.rect(0, 0, 300, 10, 4);
-    l.fill(255, 200);
-    l.rect(0, 2, v0 * 300, 8, 4);
-    l.fill(255);
-    l.text(v0.toFixed(2), 320, 10);
-    l.pop();
-  });
-  l.pop();
+  return theState.debug.layer;
+};
 
+/**
+ * Draws the debug visualization
+ * @param {Object} theState - The state object
+ * @param {Object} theLayer - Graphics layer to draw on
+ * @param {Object} theDimensions - Layout dimensions
+ */
+const drawDebug = (theState, theLayer, theDimensions) => {
+  drawBackground(theLayer, theDimensions);
+  drawHeader(theLayer, theState.debug.data.id);
+  drawValueBars(
+    theLayer,
+    theState.debug.data.value,
+    theState.range,
+    theDimensions,
+  );
+  renderFinalOutput(theLayer, isWebGLContext());
+};
+
+/**
+ * Draws the background for debug visualization
+ * @param {Object} theLayer - Graphics layer to draw on
+ * @param {Object} theDimensions - Layout dimensions
+ */
+const drawBackground = (theLayer, theDimensions) => {
+  theLayer.clear();
+  theLayer.noStroke();
+  theLayer.fill(0, 40);
+  theLayer.rect(0, 0, theDimensions.width, theDimensions.height, 16);
+};
+
+/**
+ * Draws the header with device ID
+ * @param {Object} theLayer - Graphics layer to draw on
+ * @param {string} theDeviceId - Device identifier
+ */
+const drawHeader = (theLayer, theDeviceId) => {
+  theLayer.push();
+  theLayer.translate(20, 20);
+  theLayer.fill(255);
+  theLayer.text(`Device ${theDeviceId}`, 0, 0);
+  theLayer.pop();
+};
+
+/**
+ * Draws the value bars with their corresponding numbers
+ * @param {Object} theLayer - Graphics layer to draw on
+ * @param {Array} theValue - Array of values to visualize
+ * @param {Array} theRanges - Array of min/max ranges for each value
+ * @param {Object} theDimensions - Layout dimensions
+ */
+const drawValueBars = (theLayer, theValue, theRanges, theDimensions) => {
+  theLayer.push();
+  theLayer.translate(20, 40); // Offset after header
+
+  theValue.forEach((value, i) => {
+    const mappedValue = map(value, theRanges[i].min, theRanges[i].max, 0, 1);
+
+    theLayer.push();
+    theLayer.translate(0, i * theDimensions.spacing);
+
+    // Background bar
+    theLayer.fill(255, 40);
+    theLayer.rect(0, 0, theDimensions.barLength, 10, 4);
+
+    // Value bar
+    theLayer.fill(255, 200);
+    theLayer.rect(0, 2, mappedValue * theDimensions.barLength, 8, 4);
+
+    // Value text
+    theLayer.fill(255);
+    theLayer.text(value.toFixed(2), theDimensions.barLength + 20, 10);
+
+    theLayer.pop();
+  });
+
+  theLayer.pop();
+};
+
+/**
+ * Renders the final output to the screen
+ * @param {Object} theLayer - Graphics layer to render
+ * @param {boolean} isWebGL - Whether we're in WebGL mode
+ */
+const renderFinalOutput = (theLayer, isWebGL) => {
   push();
-  if (isWEBGL) {
+
+  if (isWebGL) {
     translate(-width / 2, -height / 2);
   }
+
   translate(20, 20);
-  image(theState.debug.layer, 0, 0);
+  image(theLayer, 0, 0);
+
   pop();
 };
 
-export const log = (...args) => {
-  let msg = ``;
-  args.forEach((el) => {
-    if (el instanceof Object) {
-      msg += `\n${JSON.stringify(el, null, 2)}`;
-    } else {
-      msg += el;
-    }
-  });
-  console.log("rxtx debug : ", msg);
+/**
+ * Checks if current context is WebGL
+ * @returns {boolean} True if WebGL context
+ */
+const isWebGLContext = () => {
+  return drawingContext instanceof WebGLRenderingContext ||
+    drawingContext instanceof WebGL2RenderingContext;
+};
+
+/**
+ * Synchronizes the range array size with the value array size.
+ * Adds or removes elements from the range array to match the value array length.
+ * New range elements are initialized with {min: 0, max: 1}.
+ *
+ * @param {Array} theValue - Source array to match length against
+ * @param {Array} theRange - Target array to be resized
+ * @returns {Array} Updated range array with matching length
+ *
+ * Example:
+ * If theValue.length = 3 and theRange.length = 1
+ * Result: theRange will be expanded to length 3 with new {min:0, max:1} elements
+ */
+const updateRangeFor = (theValue, theRange) => {
+  const valueDiff = theValue.length - theRange.length;
+
+  if (valueDiff > 0) {
+    // Add new elements to range
+    const newElements = Array(valueDiff).fill().map(() => ({ min: 0, max: 1 }));
+    theRange = [...theRange, ...newElements];
+  } else if (valueDiff < 0) {
+    // Remove excess elements from range
+    theRange = theRange.slice(0, value.length);
+  }
+  return theRange;
 };

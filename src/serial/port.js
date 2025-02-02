@@ -38,9 +38,10 @@ export const getAvailablePorts = async () => {
  */
 export const reconnectToPreviouslyGrantedPorts = async (theState) => {
   const ports = await getAvailablePorts();
-  console.log("trying to reconnect to previous ports", ports);
+  console.log("trying to reconnect to previous port(s)", ports);
+
   for (const port of ports) {
-    await connectToPort(port, theState);
+    const connected = await connectToPort(port, theState);
   }
 };
 
@@ -72,7 +73,7 @@ export const checkPortConnectionFor = async (theState) => {
     port = await selectPort();
   } else {
     // Select the first port available from the ports list
-    port = ports[0];
+    port = ports.length > 0 ? ports[0] : null;
   }
   return await connectToPort(port, theState);
 };
@@ -150,17 +151,25 @@ const connectToPort = async (thePort, theState) => {
       writer,
       io: true, // @TODO: Decide if io is redundant
     });
-
-    // Start reading from the port
-    await readFromPort(theState);
-
-    return true; // Indicate success
+    
   } catch (err) {
     console.log("Error connecting to port:", err);
+
     cleanupResources(thePort, theState).then(() =>
       console.log("Resources cleaned up.")
     ).catch(console.error);
+
+    updateState(theState, {
+      connected: false,
+      port: thePort,
+      reader: null,
+      writer: null,
+      io: false, // @TODO: Decide if io is redundant
+    });
+    throw new Error("Failed to connect");
   }
+
+  await readFromPort(theState);
   return false;
 };
 
